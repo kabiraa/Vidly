@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.Entity;
 using System.Web.Mvc;
 using Vidly.Models;
 using Vidly.ViewModel;
@@ -10,11 +11,28 @@ namespace Vidly.Controllers
 {
     public class CustomerController : Controller
     {
+        private ApplicationDbContext _context;
+
+        public CustomerController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            _context.Dispose();
+        }
         // GET: Customer
         [Route("Customer/CustomerList")]
         public ActionResult CustomerList()
         {
-            var customers = GetCustomers();
+            /*
+             * The below line gives us the list of all customers, however note that Entity framework 
+             * is not querying up the object as of now.
+             */
+            var customers = _context.Customers.Include(c=> c.MembershipType); // Customers is our DbSet
+            
             var viewModel = new ListCustomerViewModel()
             {
                 Customers = customers
@@ -35,20 +53,12 @@ namespace Vidly.Controllers
 
         private string GetCustomerName(int id) {
             string customerName = "";
-            var customers = GetCustomers();
+            var customers = _context.Customers;
             foreach (Customer c in customers) {
                 if (c.Id == id)
                     customerName = c.Name;
             }
             return customerName;
-        }
-
-        private IEnumerable<Customer> GetCustomers() {
-            return new List<Customer>()
-            {
-                new Customer() {  Name = "Jyotnain", Id = 1 },
-                new Customer() { Name = "Gaurav", Id = 2 }
-            };
         }
     }
 }
