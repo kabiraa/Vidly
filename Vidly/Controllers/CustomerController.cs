@@ -42,23 +42,25 @@ namespace Vidly.Controllers
 
         [Route("Customer/Details/{id}")]
         public ActionResult Details(int id) {
-            if (string.IsNullOrEmpty(GetCustomerName(id)))
+            var customers = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c=>c.Id == id);
+            if (customers == null)
             {
                 return HttpNotFound();
             }
             else {
-                return Content("Customer Name:: " + GetCustomerName(id));
+                //return Content("Customer Name:: " + GetCustomerName(id));
+                return View(customers);
             }
         }
 
-        private string GetCustomerName(int id) {
+        /*private string GetCustomerName(int id) {
             string customerName = "";
-            var customers = _context.Customers;
+            var customers = _context.Customers.Include(c=> c.MembershipType);
             foreach (Customer c in customers) {
                 if (c.Id == id)
                     customerName = c.Name;
             }
             return customerName;
-        }
+        }*/
     }
 }

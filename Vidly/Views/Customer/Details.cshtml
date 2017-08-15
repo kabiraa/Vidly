@@ -4,5 +4,30 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.Name</h2>
+<h1>@Model.Name</h1>
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th><h1>Membership Type</h1></th>
+            @if (Model.Birthdate.HasValue)
+            {
+                <th><h1>BirthDate</h1></th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Model.MembershipType.MembershipName
+            </td>
+            @if (Model.Birthdate.HasValue)
+            {
+                <td>
+                    @Model.Birthdate.Value.ToShortDateString()
+                </td>
+            }
+        </tr>
+    </tbody>
+</table>
+
 
