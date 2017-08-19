@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.Entity;
 using System.Web.Mvc;
 using Vidly.Models;
 using Vidly.ViewModel;
@@ -10,52 +11,41 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        // GET: Movies
-        /*public ActionResult Random()
-        {
-            var movie = new Movie() { Name = "DDLJ" };
-            var customers = new List<Customer>
-            {
-                new Customer() { Name = "Kabir" },
-                new Customer() { Name = "Lallu" }
-            };
+        private ApplicationDbContext _context;
 
-            var viewModel = new RandomMovieViewModel()
-            {
-                Movie = movie,
-                Customers = customers
-            };
-            return View(viewModel);
+        public MoviesController()
+        {
+            _context = new ApplicationDbContext();
         }
 
-        public ActionResult Edit(int id)
+        protected override void Dispose(bool disposing)
         {
-            return Content("Kabir's Id " + id);
+            base.Dispose(disposing);
+            _context.Dispose();
         }
 
-        [Route("movies/released/{year}/{month:range(1,12):regex(\\d{2})}")]
-        public ActionResult ByReleaseDate(int year, int month)
+        [Route("Movies/Details/{id}")]
+        public ActionResult Details(int id)
         {
-            return Content("Year::  " + year + " and Month:  " + month);
-        }*/
+            var movieDetail = _context.Movies.Include(m => m.Genre).SingleOrDefault(m=> m.Id == id);
+            if (movieDetail == null)
+            {
+                return HttpNotFound();
+            }
+            else {
+                return View(movieDetail);
+            }
+        }
 
         [Route("Movie/MovieList")]
         public ActionResult MovieList()
         {
-            var movies = GetMovies();
+            var movies = _context.Movies.Include(m => m.Genre);
             var viewModel = new ListMoviesViewModel()
             {
                 Movies = movies
             };
             return View(viewModel);
-        }
-
-        private IEnumerable<Movie> GetMovies() {
-            return new List<Movie>()
-            {
-                new Movie() { Name = "Jatt and Juliet", Id = 1 },
-                new Movie() { Name = "Godzilla", Id = 2 }
-            };
         }
     }
 }

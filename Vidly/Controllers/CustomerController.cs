@@ -23,7 +23,7 @@ namespace Vidly.Controllers
             base.Dispose(disposing);
             _context.Dispose();
         }
-        // GET: Customer
+        
         [Route("Customer/CustomerList")]
         public ActionResult CustomerList()
         {
@@ -48,19 +48,8 @@ namespace Vidly.Controllers
                 return HttpNotFound();
             }
             else {
-                //return Content("Customer Name:: " + GetCustomerName(id));
                 return View(customers);
             }
         }
-
-        /*private string GetCustomerName(int id) {
-            string customerName = "";
-            var customers = _context.Customers.Include(c=> c.MembershipType);
-            foreach (Customer c in customers) {
-                if (c.Id == id)
-                    customerName = c.Name;
-            }
-            return customerName;
-        }*/
     }
 }
