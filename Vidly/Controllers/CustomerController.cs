@@ -41,7 +41,18 @@ namespace Vidly.Controllers
             /*Note: This line does not mean that the customer object has been added into the DB.
             It is in memory of the DB context object. The DB context has the mechanism to verify if any change
             has been made to it.*/
-            _context.Customers.Add(customer);
+
+            if (customer.Id == 0)
+                _context.Customers.Add(customer);
+            else {
+                var existingCustomer = _context.Customers.Single(c => c.Id == customer.Id);
+
+                existingCustomer.Name = customer.Name; //Could have used an automapper here.
+                existingCustomer.Birthdate = customer.Birthdate;
+                existingCustomer.IsSubscribedToNewsLetter = customer.IsSubscribedToNewsLetter;
+                existingCustomer.MembershipType = customer.MembershipType;
+                existingCustomer.MembershipTypeId = customer.MembershipTypeId;
+            }
             _context.SaveChanges(); // SQL statements are generate at runtime based on modifications made to DB context
                                     // run on the DB.
             return RedirectToAction("CustomerList", "Customer");
