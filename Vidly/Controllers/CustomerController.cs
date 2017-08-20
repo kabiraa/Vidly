@@ -23,7 +23,30 @@ namespace Vidly.Controllers
             base.Dispose(disposing);
             _context.Dispose();
         }
-        
+
+        public ActionResult CustomerForm()
+        {
+            var membershipTypes = _context.MembershipTypes.ToList();
+            var viewModel = new CustomerFormViewModel()
+            {
+                MembershipTypes = membershipTypes
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Save(Customer customer)
+        {
+            //_context.Customers.Add(customer);
+            /*Note: This line does not mean that the customer object has been added into the DB.
+            It is in memory of the DB context object. The DB context has the mechanism to verify if any change
+            has been made to it.*/
+            _context.Customers.Add(customer);
+            _context.SaveChanges(); // SQL statements are generate at runtime based on modifications made to DB context
+                                    // run on the DB.
+            return RedirectToAction("CustomerList", "Customer");
+        }
+
         [Route("Customer/CustomerList")]
         public ActionResult CustomerList()
         {
@@ -50,6 +73,19 @@ namespace Vidly.Controllers
             else {
                 return View(customers);
             }
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            if (customer == null)
+                return HttpNotFound();
+            var viewModel = new CustomerFormViewModel()
+            {
+                Customer = customer,
+                MembershipTypes = _context.MembershipTypes.ToList()
+            };
+            return View("CustomerForm", viewModel);
         }
     }
 }
