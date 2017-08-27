@@ -29,14 +29,25 @@ namespace Vidly.Controllers
             var membershipTypes = _context.MembershipTypes.ToList();
             var viewModel = new CustomerFormViewModel()
             {
+                Customer = new Customer(),
                 MembershipTypes = membershipTypes
             };
             return View(viewModel);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Customer customer)
         {
+            if (!ModelState.IsValid) {
+                var customerFormModel = new CustomerFormViewModel
+                {
+                    Customer = customer,
+                    MembershipTypes = _context.MembershipTypes.ToList()
+                };
+                return View("CustomerForm", customerFormModel);
+            }
+
             //_context.Customers.Add(customer);
             /*Note: This line does not mean that the customer object has been added into the DB.
             It is in memory of the DB context object. The DB context has the mechanism to verify if any change

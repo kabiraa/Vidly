@@ -14,6 +14,7 @@ namespace Vidly.Models
         [StringLength(255)]
         public string Name { get; set; }
 
+        [MemberMustBeAdult]
         [Display(Name = "Date of Birth")]
         public DateTime? Birthdate { get; set; }
 
@@ -21,6 +22,7 @@ namespace Vidly.Models
 
         public MembershipTypes MembershipType { get; set; }
 
+        [Required]
         [Display(Name = "Membership Type")]
         public int MembershipTypeId { get; set; }
 
