@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using Vidly.Models;
 
 namespace Vidly.ViewModel
@@ -12,11 +9,7 @@ namespace Vidly.ViewModel
         public Movie Movie { get; set; }
 
         public string GetMovieTitle() {
-            string movieTitle = "New Movie";
-            if (Movie != null) {
-                movieTitle = "Edit Movie";
-            }
-            return movieTitle;
+            return Movie != null ? "Edit Movie" : "New Movie";
         }
     }
 }
