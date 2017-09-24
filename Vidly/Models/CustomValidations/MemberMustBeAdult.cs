@@ -1,5 +1,7 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.ComponentModel.DataAnnotations;
+using Vidly.DTOs;
 
 namespace Vidly.Models
 {
@@ -7,7 +9,14 @@ namespace Vidly.Models
     {
         protected override ValidationResult IsValid(object value, ValidationContext vContext)
         {
-            var customer = (Customer)vContext.ObjectInstance;
+            var customer = new Customer();
+            if (vContext.ObjectType == typeof(Customer)) {
+                customer = (Customer)vContext.ObjectInstance;
+            }
+            else {
+                customer = Mapper.Map((CustomerDTO)vContext.ObjectInstance,customer);
+            }
+            
             if (customer.MembershipTypeId == 0 || customer.MembershipTypeId == 1)
             {
                 return ValidationResult.Success;
